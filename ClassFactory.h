@@ -1,13 +1,9 @@
-#define REGISTER_LPN_CLASS(type, name, ...)                                                   \
-template<class... Args>                                                                       \
-Lpn##type####name* lpn_##type##_generator(Args... args)                                       \
-{                                                                                             \
-  return new Lpn##type####name(std::forward<Args>(args)...);                                  \
-}                                                                                             \
-Lpn##name##Factory lpn_##type##_##name##_factory(#type, lpn_##type##_generator<__VA_ARGS__>);
+#ifndef CLASS_FACTORY_H__
+#define CLASS_FACTORY_H__
 
-#define REGISTER_LPN_MODEL_CLASS(type) \
-  REGISTER_LPN_CLASS(type, Model)
+#include <string>
+#include <functional>
+#include <unordered_map>
 
 template<class T, class... Args>
 class ClassFactory
@@ -57,3 +53,13 @@ std::string ClassFactory<T, Args...>::get_class_names()
   exist_classes_name += "]";
   return exist_classes_name;
 }
+
+#define REGISTER_CLASS(ClassName, Mark, ...)                                          \
+template<class... Args>                                                               \
+ClassName* ClassName##_generator(Args... args)                                        \
+{                                                                                     \
+  return new ClassName(std::forward<Args>(args)...);                                  \
+}                                                                                     \
+Factory##Mark ClassName##_##Mark##_factory(#ClassName, ClassName##_generator<__VA_ARGS__>);
+
+#endif
